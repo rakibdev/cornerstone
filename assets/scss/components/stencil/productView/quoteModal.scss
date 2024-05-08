@@ -1,0 +1,18 @@
+
+#quoteModal input {
+  margin-bottom: 16px;
+}
+
+#quoteModal input:focus + label {
+  outline: none !important; /* fixing cornerstone unwanted css style */
+}
+
+#quoteModal .modal-content {
+  display: flex;
+  flex-direction: column;
+}
+
+#quoteModal .submit-quote {
+  margin-top: 16px;
+  align-self: center;
+}

@@ -765,6 +765,12 @@
             "show": "Show Videos"
         },
         "add_to_cart": "Add to Cart",
+        "quote": "Quote",
+        "quote_modal": {
+            "email": "Your email",
+            "message": "Message",
+            "message_placeholder": "Offer your price"
+        },
         "adding_to_cart": "Adding to cart…",
         "options": "Options",
         "none": "None",

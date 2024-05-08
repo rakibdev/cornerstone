@@ -335,50 +335,18 @@
         }
     }
 
+    // so much code uneeded for such a simple thing.
     .add-to-cart-buttons {
-        display: inline-grid;
-        float: left;
-        margin-bottom: 1rem;
-        width: 100%;
-
-        @include breakpoint("small") {
-            padding: 0 remCalc(10);
-            width: 50%;
-        }
-
-        @include breakpoint("medium") {
-            padding-right: spacing("half");
-            width: 50%;
-        }
+        display: flex;
+        gap: 16px;
+        flex-direction: column;
 
         @include breakpoint("large") {
-            display: inline-block;
-            margin-top: 1rem;
-            padding-right: spacing("half");
-            width: 50%;
+            flex-direction: row;
         }
 
-        &.pre-order-buttons {
-            @include breakpoint("small") {
-                min-width: 50%;
-                width: auto;
-            }
-
-            @include breakpoint("medium") {
-                margin-right: remCalc(11px);
-                min-width: auto;
-                padding: 0;
-                width: auto;
-            }
-
-            .button {
-                padding: remCalc(13px) remCalc(24px);
-            }
-        }
-
-        .button {
-            margin: 0;
-            width: 100%;
+        .button, .form-action {
+            flex: 1;
         }
     }
 

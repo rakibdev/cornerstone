@@ -53,6 +53,10 @@
                 >
                 <span class="product-status-message aria-description--hidden">{{lang 'products.adding_to_cart'}} {{lang 'category.add_cart_announcement'}}</span>
             </div>
+            
+            <!-- Needing type=button in button because cornerstone wrapped them inside <form> in parent. Now any button without "type" triggering submit. -->
+            <button type="button" class="button quote">{{ lang 'products.quote' }}</button>
+
             {{#if this.with_wallet_buttons}}
                 <div class="add-to-cart-wallet-buttons" data-add-to-cart-wallet-buttons>
                     {{> components/common/wallet-buttons}}

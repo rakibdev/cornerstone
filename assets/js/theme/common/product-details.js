@@ -83,13 +83,22 @@ export default class ProductDetails extends ProductDetailsBase {
             this.setProductVariant();
         });
 
-        $form.on('submit', event => {
+        const validateForm = () => {
             this.addToCartValidator.performCheck();
+            return this.addToCartValidator.areAll('valid')
+        }
 
-            if (this.addToCartValidator.areAll('valid')) {
-                this.addProductToCart(event, $form[0]);
+        $form.on('submit', event => {
+            if (validateForm())  {
+                event.preventDefault();
+                this.onSubmitForm($form[0], event.target);
             }
         });
+
+        const quote = $form[0].querySelector('.quote')
+        quote.addEventListener('click', () => {
+            if (validateForm()) this.openQuoteModal()
+        })
 
         // Update product attributes. Also update the initial view in case items are oos
         // or have default variant properties that change the view
@@ -106,6 +115,7 @@ export default class ProductDetails extends ProductDetailsBase {
         $productOptionsElement.show();
 
         this.previewModal = modalFactory('#previewModal')[0];
+        this.quoteModal = modalFactory('#quoteModal')[0];
     }
 
     registerAddToCartValidation() {
@@ -400,18 +410,10 @@ export default class ProductDetails extends ProductDetailsBase {
      * Add a product to cart
      *
      */
-    addProductToCart(event, form) {
-        const $addToCartBtn = $('#form-action-addToCart', $(event.target));
+    onSubmitForm(form, addToCart) {
+        const $addToCartBtn = $('#form-action-addToCart', addToCart);
         const originalBtnVal = $addToCartBtn.val();
         const waitMessage = $addToCartBtn.data('waitMessage');
-
-        // Do not do AJAX if browser doesn't support FormData
-        if (window.FormData === undefined) {
-            return;
-        }
-
-        // Prevent default
-        event.preventDefault();
 
         $addToCartBtn
             .val(waitMessage)
@@ -590,5 +592,55 @@ export default class ProductDetails extends ProductDetailsBase {
             bubbles: true,
             detail: { productDetails },
         }));
+    }
+
+    onClickSubmitQuote(button) {
+        // so in server side template they set "waitMessage" based on user prefered language and in client side reads it from dom.
+        // better way would've been fetching language json and storing in global store similar to vuex and reading by importing in any js file. 
+        const addToCart = document.querySelector('#form-action-addToCart')
+        const waitMessage = addToCart.dataset.waitMessage
+        button.textContent = waitMessage
+        button.disabled = true
+        
+        // add to cart
+        const form = $('form[data-cart-item-add]', this.$scope)[0];
+        utils.api.cart.itemAdd(normalizeFormData(new FormData(form)), (err, response) => {
+            this.redirectTo(response.data.cart_item.cart_url || this.context.urls.cart);
+        })
+    }
+
+    openQuoteModal() {
+        this.quoteModal.open();
+
+        const viewModel = this.getViewModel(this.$scope);
+        const quantity = viewModel.quantity.$input[0].value
+        const priceContent = viewModel.$priceWithoutTax[0].textContent
+        const price = parseInt(priceContent.slice(1))
+
+        // i feel like rewriting everything using React/Vue/Svelte + headless ecommerce rest api
+        // would be easier than customizing cornerstone theme.
+        
+        // productId is injected in templates/pages/product.html
+        // which can be accessed here using "this.context.productId"
+
+        // utils.api.product.getById is bit slow, therefore the modal also loads slow
+        // but that is how bigcommerce's "stencil-utils" library work. they do server side rendering even for modal.
+
+        utils.api.product.getById(this.context.productId, { template: 'products/modals/quote' }, (err, response) => {
+            this.quoteModal.updateContent(response)
+
+            const modalElement = this.quoteModal.$modal[0]
+
+            const submitQuote = modalElement.querySelector('.submit-quote')
+            submitQuote.addEventListener('click', () => {
+                this.onClickSubmitQuote(submitQuote)
+            })
+
+            const quantityContent = modalElement.querySelector('.quantity')
+            quantityContent.textContent = quantity
+
+            const totalPrice = modalElement.querySelector('.total-price')
+            totalPrice.textContent = price * quantity
+        })
     }
 }

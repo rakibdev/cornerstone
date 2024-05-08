@@ -764,6 +764,12 @@
             "show": "Videos anzeigen"
         },
         "add_to_cart": "Zum Warenkorb hinzufügen",
+        "quote": "Zitat",
+        "quote_modal": {
+            "email": "Deine E-Mail",
+            "message": "Nachricht",
+            "message_placeholder": "Bieten Sie Ihren Preis an"
+        },
         "adding_to_cart": "Wird zum Warenkorb hinzugefügt …",
         "options": "Optionen",
         "none": "Keine",

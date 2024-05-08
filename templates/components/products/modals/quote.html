@@ -1,0 +1,34 @@
+<div class="modal-header">
+  <h1 id="modal-header-title" class="modal-header-title">
+    Quote
+  </h1>
+</div>
+<div class="modal-body">
+  <!--
+    can read product details like image here.
+    css for this file is in assets/scss/components/stencil/productView/quoteModal.scss
+    bigcommerce should structure "folder by feature" instead of putting them completely seperate aka "folder by type".
+  -->
+
+  <p>Title: {{ product.title }}</p>
+  <p>Quantity: <span class="quantity"></span></p>
+  <p>Price: {{ product.price.without_tax.value }} {{ currency_selector.active_currency_code}}</p>
+  <p>Total price: <span class="total-price"></span> {{ currency_selector.active_currency_code}}</p>
+
+  <!-- demo inputs -->
+  <label class="form-label">{{ lang 'products.quote_modal.email' }}</label>
+  <input
+    required
+    type="email"
+    class="form-input"
+  >
+  <label class="form-label">{{ lang 'products.quote_modal.message' }}</label>
+  <textarea
+    rows="4"
+    required
+    class="form-input"
+    placeholder="{{ lang 'products.quote_modal.message_placeholder' }}"
+  >
+</textarea>
+</div>
+<button type="button" class="button button--primary submit-quote">{{ lang 'products.add_to_cart' }}</button>
